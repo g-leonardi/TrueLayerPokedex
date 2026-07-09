@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Pokedex.Api.Infra.Contracts;
 
-public record PokemonDTO(
+public record PokemonSpeciesDTO(
     [property: JsonPropertyName("name")]
     string Name,
     [property: JsonPropertyName("is_legendary")]
