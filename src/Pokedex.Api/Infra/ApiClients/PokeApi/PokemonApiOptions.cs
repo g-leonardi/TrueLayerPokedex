@@ -1,4 +1,5 @@
-namespace Pokedex.Api.Infra.ApiClients;
+namespace Pokedex.Api.Infra.ApiClients.PokeApi;
+
 public class PokemonApiOptions
 {
     public const string SectionName = "PokemonApi";

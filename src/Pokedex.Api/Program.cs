@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using Pokedex.Api.Exceptions;
-using Pokedex.Api.Infra.ApiClients;
+using Pokedex.Api.Infra.ApiClients.PokeApi;
+using Pokedex.Api.Infra.ApiClients.Translation;
 using Pokedex.Api.Infra.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,9 @@ builder.Services.AddHttpClient<IPokemonApiClient, PokemonApiClient>((sp, client)
     client.BaseAddress = new Uri(opt.BaseUrl);
 });
 
+// Translation client talks to two absolute URLs (from TranslationApiOptions),
+// so no single BaseAddress here — the client posts to the URL it resolves per kind.
+builder.Services.AddHttpClient<ITranslationApiClient, TranslationApiClient>();
 
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 var app = builder.Build();
@@ -59,4 +63,7 @@ app.MapGet("/pokemon/translated/{name}", async (string name, IPokemonService ser
 });
 
 app.Run();
+
+// Exposes the implicit top-level Program class to the test project (WebApplicationFactory<Program>).
+public partial class Program { }
 

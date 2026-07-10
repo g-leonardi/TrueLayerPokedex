@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text;
 using Pokedex.Api.Exceptions;
-using Pokedex.Api.Infra.ApiClients;
+using Pokedex.Api.Infra.ApiClients.PokeApi;
 
 namespace Pokedex.Api.Tests;
 
