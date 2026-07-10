@@ -1,7 +1,4 @@
 using Pokedex.Api.Domain;
-using Pokedex.Api.Infra.Contracts;
-using Pokedex.Api.Exceptions;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Pokedex.Api.Utils;
 

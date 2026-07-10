@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Pokedex.Api.Domain;
 using Pokedex.Api.Exceptions;
-using Pokedex.Api.Infra.Contracts;
+using Pokedex.Api.Infra.Contracts.Pokemon;
 using Pokedex.Api.Utils;
 
 namespace Pokedex.Api.Infra.ApiClients;

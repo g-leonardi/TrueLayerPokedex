@@ -1,5 +1,5 @@
 using Pokedex.Api.Domain;
-using Pokedex.Api.Infra.Contracts;
+using Pokedex.Api.Infra.Contracts.Pokemon;
 using Pokedex.Api.Exceptions; 
 
 namespace Pokedex.Api.Utils;
