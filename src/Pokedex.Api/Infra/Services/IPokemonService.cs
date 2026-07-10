@@ -5,8 +5,6 @@ namespace Pokedex.Api.Infra.Services
     public interface IPokemonService
     {
         Task<Pokemon> GetPokemonAsync(string pokemonName, CancellationToken ct);
-        //Task<Pokemon> GetPokemonTranslationAsync(string nameOrId);
-    }
-
+        Task<Pokemon> GetPokemonTranslatedAsync(string name, CancellationToken ct);    }
     
-}
+    }

@@ -1,5 +1,6 @@
 using Pokedex.Api.Domain;
 using Pokedex.Api.Infra.ApiClients;
+using Pokedex.Api.Utils;
 
 namespace Pokedex.Api.Infra.Services;
 
@@ -17,7 +18,16 @@ public class PokemonService : IPokemonService
         return await _pokemonApi.GetPokemonAsync(pokemonName,ct);
     }
 
-   
+    public async Task<Pokemon> GetPokemonTranslatedAsync(string pokemonName, CancellationToken ct)
+    {
+        Pokemon pkmn = await _pokemonApi.GetPokemonAsync(pokemonName, ct);
+        switch (PokemonTranslationPolicy.GetTranslationKind(pkmn))
+        {
+            case TranslationKind.Yoda:
+            case TranslationKind.Shakespeare:
+            default: break;
+        }
 
-    
+        return pkmn;
+    }
 }
