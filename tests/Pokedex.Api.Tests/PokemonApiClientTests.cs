@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Pokedex.Api.Exceptions;
 using Pokedex.Api.Infra.ApiClients;
 
@@ -14,12 +15,19 @@ namespace Pokedex.Api.Tests;
 
 public class PokemonApiClientTests
 {
-    // Fake handler: ignores the request and always returns the preconfigured response.
+    // Fake handler ("spy"): returns the preconfigured response AND records the
+    // last request it received, so a test can assert on the URL the client built.
     private sealed class StubHandler(HttpResponseMessage response) : HttpMessageHandler
     {
+        // public getter so the test can read it; private setter so only the handler writes it.
+        public HttpRequestMessage? LastRequest { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken ct)
-            => Task.FromResult(response);
+        {
+            LastRequest = request;              // capture BEFORE answering
+            return Task.FromResult(response);
+        }
     }
 
     // Creates a PokemonApiClient on an HttpClient that uses the fake handler.
@@ -92,5 +100,25 @@ public class PokemonApiClientTests
 
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => client.GetPokemonAsync("mewtwo"));
+    }
+
+    // 5) CASE-INSENSITIVE + TRIM — PokéAPI only accepts lowercase paths (§4 wants
+    //    the API to be case-insensitive). The client must Trim + lowercase the name
+    //    before building the URL. We can't check a return value for this, so we "spy"
+    //    on the OUTGOING request and assert on the path it built.
+    [Fact]
+    public async Task GetPokemonAsync_MixedCaseAndPaddedName_RequestsNormalizedPath()
+    {
+        // Built by hand (not via ClientReturning) so we keep a reference to the
+        // handler and can inspect the request it captured.
+        var handler = new StubHandler(JsonResponse(HttpStatusCode.OK, MewtwoJson));
+        var http = new HttpClient(handler) { BaseAddress = new Uri("https://test/") };
+        var client = new PokemonApiClient(http);
+
+        await client.GetPokemonAsync("  MewTwo  ");   // padded + mixed case, both wrong
+
+        Assert.NotNull(handler.LastRequest);
+        // One assert covers both Trim AND ToLowerInvariant:
+        Assert.Equal("/pokemon-species/mewtwo", handler.LastRequest!.RequestUri!.AbsolutePath);
     }
 }

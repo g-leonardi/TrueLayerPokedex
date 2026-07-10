@@ -15,7 +15,7 @@ public class PokemonApiClient : IPokemonApiClient
 
     public async Task<Pokemon> GetPokemonAsync(string name, CancellationToken ct = default)
     {
-        var response = await _http.GetAsync($"pokemon-species/{name}", ct);
+        var response = await _http.GetAsync($"pokemon-species/{name.ToLowerInvariant().Trim()}", ct);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             throw new PokemonNotFoundException(name);
