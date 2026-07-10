@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Pokedex.Api.Exceptions;
 using Pokedex.Api.Infra.ApiClients;
 
