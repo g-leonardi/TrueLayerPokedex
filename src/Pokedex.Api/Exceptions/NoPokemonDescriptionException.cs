@@ -1,5 +1,6 @@
 namespace Pokedex.Api.Exceptions;
 
+/// <summary>Thrown when a Pokémon has no English flavor text to use as its description.</summary>
 public class NoPokemonDescriptionException : Exception
 {
     public NoPokemonDescriptionException()

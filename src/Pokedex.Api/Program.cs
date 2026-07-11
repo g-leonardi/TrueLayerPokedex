@@ -4,6 +4,9 @@ using Pokedex.Api.Infra.ApiClients.PokeApi;
 using Pokedex.Api.Infra.ApiClients.Translation;
 using Pokedex.Api.Infra.Services;
 
+// Composition root: bind options, register the two typed HttpClients (PokéAPI + FunTranslations)
+// and the service, then map the two endpoints. Each endpoint stays thin — it delegates to the
+// service and translates exceptions into HTTP status codes (404 not found, 502 upstream failure).
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<PokemonApiOptions>(
@@ -26,8 +29,9 @@ builder.Services.AddScoped<IPokemonService, PokemonService>();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-//First endopoint
-app.MapGet("/pokemon/{name}", async (string name, IPokemonService service, CancellationToken ct) =>
+
+// Endpoint 1 — basic Pokémon information.
+app.MapGet("/pokemon/{name}", async (string name, IPokemonService service, ILogger<Program> logger, CancellationToken ct) =>
 {
     try
     {
@@ -38,14 +42,15 @@ app.MapGet("/pokemon/{name}", async (string name, IPokemonService service, Cance
     {
         return Results.NotFound();
     }
-    catch (HttpRequestException)
+    catch (HttpRequestException ex)
     {
+        logger.LogError(ex, "Upstream PokéAPI call failed for {PokemonName}; returning 502", name);
         return Results.StatusCode(502);
     }
 });
 
-//Second endpoint
-app.MapGet("/pokemon/translated/{name}", async (string name, IPokemonService service, CancellationToken ct) =>
+// Endpoint 2 — Pokémon information with a translated description (best-effort, falls back to standard).
+app.MapGet("/pokemon/translated/{name}", async (string name, IPokemonService service, ILogger<Program> logger, CancellationToken ct) =>
 {
     try
     {
@@ -56,8 +61,9 @@ app.MapGet("/pokemon/translated/{name}", async (string name, IPokemonService ser
     {
         return Results.NotFound();
     }
-    catch (HttpRequestException)
+    catch (HttpRequestException ex)
     {
+        logger.LogError(ex, "Upstream PokéAPI call failed for {PokemonName}; returning 502", name);
         return Results.StatusCode(502);
     }
 });

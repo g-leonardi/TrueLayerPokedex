@@ -2,10 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Pokedex.Api.Infra.Contracts.Pokemon;
 
-// Shape of the PokéAPI `pokemon-species` response — only the fields we read.
-// These records have no life of their own: they're sub-parts of this one contract,
-// so they live together in a single file rather than one tiny file each.
-
+/// <summary>
+/// Shape of the PokéAPI <c>pokemon-species</c> response — only the fields we read. The nested
+/// records have no life of their own (they're sub-parts of this one contract), so they live
+/// together in a single file rather than one tiny file each.
+/// </summary>
 public record PokemonSpeciesDTO(
     [property: JsonPropertyName("name")]
     string Name,

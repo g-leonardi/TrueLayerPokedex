@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Pokedex.Api.Domain;
 using Pokedex.Api.Infra.ApiClients.PokeApi;
 using Pokedex.Api.Infra.ApiClients.Translation;
@@ -35,7 +36,8 @@ public class PokemonServiceTests
     {
         var service = new PokemonService(
             new FakePokemonApiClient(SamplePokemon),
-            new FakeTranslationApiClient("Created by a scientist, it was."));
+            new FakeTranslationApiClient("Created by a scientist, it was."),
+            NullLogger<PokemonService>.Instance);
 
         var result = await service.GetPokemonTranslatedAsync("mewtwo", default);
 
@@ -49,7 +51,8 @@ public class PokemonServiceTests
     {
         var service = new PokemonService(
             new FakePokemonApiClient(SamplePokemon),
-            new FakeTranslationApiClient(null));   // null = translation unavailable
+            new FakeTranslationApiClient(null),   // null = translation unavailable
+            NullLogger<PokemonService>.Instance);
 
         var result = await service.GetPokemonTranslatedAsync("mewtwo", default);
 

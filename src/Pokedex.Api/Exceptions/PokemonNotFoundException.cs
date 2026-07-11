@@ -1,5 +1,6 @@
 namespace Pokedex.Api.Exceptions;
 
+/// <summary>Thrown when the requested Pokémon does not exist (PokéAPI returns 404). Maps to a 404 response.</summary>
 public class PokemonNotFoundException : Exception
 {
     public PokemonNotFoundException()

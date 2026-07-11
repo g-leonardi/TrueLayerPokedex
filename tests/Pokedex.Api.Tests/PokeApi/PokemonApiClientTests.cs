@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 using Pokedex.Api.Exceptions;
 using Pokedex.Api.Infra.ApiClients.PokeApi;
 
@@ -37,7 +38,7 @@ public class PokemonApiClientTests
         {
             BaseAddress = new Uri("https://test/")
         };
-        return new PokemonApiClient(http);
+        return new PokemonApiClient(http, NullLogger<PokemonApiClient>.Instance);
     }
 
     private static HttpResponseMessage JsonResponse(HttpStatusCode status, string json) =>
@@ -112,7 +113,7 @@ public class PokemonApiClientTests
         // handler and can inspect the request it captured.
         var handler = new StubHandler(JsonResponse(HttpStatusCode.OK, MewtwoJson));
         var http = new HttpClient(handler) { BaseAddress = new Uri("https://test/") };
-        var client = new PokemonApiClient(http);
+        var client = new PokemonApiClient(http, NullLogger<PokemonApiClient>.Instance);
 
         await client.GetPokemonAsync("  MewTwo  ");   // padded + mixed case, both wrong
 

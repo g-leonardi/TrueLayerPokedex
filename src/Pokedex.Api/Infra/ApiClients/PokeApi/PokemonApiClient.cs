@@ -6,15 +6,26 @@ using Pokedex.Api.Utils;
 
 namespace Pokedex.Api.Infra.ApiClients.PokeApi;
 
+/// <summary>Typed <see cref="HttpClient"/> for the PokéAPI <c>pokemon-species</c> resource.</summary>
 public class PokemonApiClient : IPokemonApiClient
 {
     private readonly HttpClient _http;
+    private readonly ILogger<PokemonApiClient> _logger;
 
-    public PokemonApiClient(HttpClient http) => _http = http;
+    public PokemonApiClient(HttpClient http, ILogger<PokemonApiClient> logger)
+    {
+        _http = http;
+        _logger = logger;
+    }
 
+    /// <inheritdoc />
     public async Task<Pokemon> GetPokemonAsync(string name, CancellationToken ct = default)
     {
-        var response = await _http.GetAsync($"pokemon-species/{name.ToLowerInvariant().Trim()}", ct);
+        // PokéAPI only accepts lowercase, unpadded names in the path.
+        var normalized = name.ToLowerInvariant().Trim();
+        _logger.LogDebug("Requesting species for {PokemonName} from PokéAPI", normalized);
+
+        var response = await _http.GetAsync($"pokemon-species/{normalized}", ct);
 
         if (response.StatusCode == HttpStatusCode.NotFound)
             throw new PokemonNotFoundException(name);
@@ -22,6 +33,8 @@ public class PokemonApiClient : IPokemonApiClient
         response.EnsureSuccessStatusCode();
 
         var species = await response.Content.ReadFromJsonAsync<PokemonSpeciesDTO>(ct);
-        return species != null ? PokemonMapper.ToDomain(species) : throw new InvalidOperationException($"Failed to deserialize Pokemon species response for '{name}'.");
+        return species != null
+            ? PokemonMapper.ToDomain(species)
+            : throw new InvalidOperationException($"Failed to deserialize Pokemon species response for '{name}'.");
     }
 }

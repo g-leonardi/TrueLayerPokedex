@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Pokedex.Api.Infra.Contracts.Translation;
 
-// Shape of the FunTranslations response — only `contents.translated` is read.
+/// <summary>Shape of the FunTranslations response — only <c>contents.translated</c> is read.</summary>
 public record TranslationDTO(
     [property: JsonPropertyName("contents")]
     TranslationContentsDTO Contents

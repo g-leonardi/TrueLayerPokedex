@@ -1,10 +1,16 @@
 namespace Pokedex.Api.Infra.ApiClients.Translation;
 
-// Config for the FunTranslations service — a DIFFERENT external service than the
-// PokéAPI, so it lives in its own options class bound to its own config section.
+/// <summary>
+/// Configuration for the FunTranslations client, bound from the <c>TranslationApi</c> section.
+/// It's a separate external service from the PokéAPI, hence its own options and config section.
+/// </summary>
 public class TranslationApiOptions
 {
     public const string SectionName = "TranslationApi";
-    public string YodaUrl { get; set; } = "";        // e.g. "https://api.funtranslations.mercxry.me/v1/translate/yoda"
-    public string ShakespeareUrl { get; set; } = ""; // e.g. "https://api.funtranslations.mercxry.me/v1/translate/shakespeare"
+
+    /// <summary>Full URL of the Yoda endpoint, e.g. <c>https://api.funtranslations.mercxry.me/v1/translate/yoda</c>.</summary>
+    public string YodaUrl { get; set; } = "";
+
+    /// <summary>Full URL of the Shakespeare endpoint.</summary>
+    public string ShakespeareUrl { get; set; } = "";
 }

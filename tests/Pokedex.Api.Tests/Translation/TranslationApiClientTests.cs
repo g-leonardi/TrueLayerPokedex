@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Pokedex.Api.Domain;                       // TranslationKind
 using Pokedex.Api.Infra.ApiClients.Translation; // TranslationApiClient, TranslationApiOptions
@@ -32,7 +33,7 @@ public class TranslationApiClientTests
             YodaUrl = "https://test/yoda",
             ShakespeareUrl = "https://test/shakespeare"
         });
-        return new TranslationApiClient(http, options);
+        return new TranslationApiClient(http, options, NullLogger<TranslationApiClient>.Instance);
     }
 
      private static TranslationApiClient ClientReturning(StubHandler stub)
@@ -43,7 +44,7 @@ public class TranslationApiClientTests
             YodaUrl = "https://test/yoda",
             ShakespeareUrl = "https://test/shakespeare"
         });
-        return new TranslationApiClient(http, options);
+        return new TranslationApiClient(http, options, NullLogger<TranslationApiClient>.Instance);
     }
 
     private static HttpResponseMessage JsonResponse(HttpStatusCode status, string json="") =>
