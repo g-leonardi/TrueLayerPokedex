@@ -1,0 +1,20 @@
+# Build outputs — the image rebuilds these from scratch
+**/bin/
+**/obj/
+
+# Version control & IDE
+.git/
+.gitignore
+.vs/
+.vscode/
+.idea/
+
+# Docker files themselves — not needed inside the image
+Dockerfile
+.dockerignore
+
+# Personal / confidential — must never be baked into the image
+WORKLOG.md
+BRAINSTORM.md
+CREDENZIALI*.md
+*.pdf

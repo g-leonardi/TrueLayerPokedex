@@ -28,7 +28,10 @@ builder.Services.AddHttpClient<ITranslationApiClient, TranslationApiClient>();
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// TLS is terminated upstream (proxy / load balancer) when containerised, so the app only
+// redirects to HTTPS during local development — in production it serves plain HTTP.
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 // Endpoint 1 — basic Pokémon information.
 app.MapGet("/pokemon/{name}", async (string name, IPokemonService service, ILogger<Program> logger, CancellationToken ct) =>
